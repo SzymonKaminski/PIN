@@ -52,6 +52,16 @@ internal class GameServer : PacketServer
         DataUtils.Init();
         Factory.Init();
         NewShard(ct);
+
+        _ = GRPCService
+            .ListenAsync(_clientMap)
+            .ContinueWith(t =>
+                          {
+                              if (t.Exception != null)
+                              {
+                                  Console.WriteLine(t.Exception.ToString());
+                              }
+                          }, ct);
     }
 
     protected override async void ServerRunThreadAsync(CancellationToken ct)

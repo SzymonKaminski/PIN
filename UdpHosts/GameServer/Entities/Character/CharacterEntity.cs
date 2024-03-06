@@ -99,6 +99,7 @@ public partial class CharacterEntity : BaseAptitudeEntity, IAptitudeTarget
     public ulong CurrentPermissionsValue => GetCurrentPermissionsValue();
 
     public StaticInfoData StaticInfo { get; set; }
+    public ulong ArmyGUID { get; set; }
     public CharacterStateData CharacterState { get; set; }
     public HostilityInfoData HostilityInfo { get; set; }
     public MaxVital MaxShields { get; set; }
@@ -372,6 +373,8 @@ public partial class CharacterEntity : BaseAptitudeEntity, IAptitudeTarget
                 Race = (byte)remoteData.CharacterInfo.Race,
                 TitleId = (ushort)remoteData.CharacterInfo.TitleId,
                 CurrentBattleframeSDBId = remoteData.CharacterInfo.CurrentBattleframeSDBId,
+                ArmyGUID = remoteData.CharacterInfo.ArmyGUID,
+                ArmyTag = remoteData.CharacterInfo.ArmyTag,
             },
             CharacterVisuals = new Data.BasicCharacterVisuals()
             {
@@ -439,8 +442,10 @@ public partial class CharacterEntity : BaseAptitudeEntity, IAptitudeTarget
                 MorphWeights = Array.Empty<HalfFloat>(),
                 Overlays = Array.Empty<VisualsOverlayBlock>()
             },
-            ArmyTag = HardcodedCharacterData.ArmyTag
+            ArmyTag = string.IsNullOrEmpty(info.ArmyTag) ? string.Empty : "[" + info.ArmyTag + "]"
         });
+
+        SetArmyGUID(info.ArmyGUID);
     }
 
     public void ApplyLoadout(CharacterLoadout loadout)
@@ -691,6 +696,16 @@ public partial class CharacterEntity : BaseAptitudeEntity, IAptitudeTarget
         if (Character_BaseController != null)
         {
             Character_BaseController.StaticInfoProp = StaticInfo;
+        }
+    }
+
+    public void SetArmyGUID(ulong value)
+    {
+        ArmyGUID = value;
+        Character_ObserverView.ArmyGUIDProp = ArmyGUID;
+        if (Character_BaseController != null)
+        {
+            Character_BaseController.ArmyGUIDProp = ArmyGUID;
         }
     }
 
@@ -1102,7 +1117,8 @@ public partial class CharacterEntity : BaseAptitudeEntity, IAptitudeTarget
             SinFlagsPrivateProp = 0,
             SinFactionsAcquiredByProp = null,
             SinTeamsAcquiredByProp = null,
-            ArmyGUIDProp = HardcodedCharacterData.ArmyGUID,
+            ArmyGUIDProp = ArmyGUID,
+            // HardcodedCharacterData.ArmyGUID,
             ArmyIsOfficerProp = 0,
             EncounterPartyTupleProp = null,
             DockedParamsProp = DockedParams,

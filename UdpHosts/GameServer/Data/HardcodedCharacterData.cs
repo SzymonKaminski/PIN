@@ -10,8 +10,8 @@ namespace GameServer.Data;
 
 public static class HardcodedCharacterData
 {
-    public static string ArmyTag = "[ARMY]";
-    public static ulong ArmyGUID = 1u;
+    // public static string ArmyTag = "[ARMY]";
+    // public static ulong ArmyGUID = 1u;
     public static uint SelectedLoadout = 184538131;
     public static byte Level = 45;
     public static byte EffectiveLevel = 45;
@@ -951,6 +951,8 @@ public class BasicCharacterInfo
     public uint Race { get; set; }
     public ushort TitleId { get; set; }
     public uint CurrentBattleframeSDBId { get; set; }
+    public ulong ArmyGUID { get; set; }
+    public string ArmyTag { get; set; }
 }
 
 public class BasicCharacterVisuals
