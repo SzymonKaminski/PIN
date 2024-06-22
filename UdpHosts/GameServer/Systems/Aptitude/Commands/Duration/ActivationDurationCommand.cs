@@ -33,7 +33,7 @@ public class ActivationDurationCommand : ICommand
             // We assume we can use the init time as comparison.
             if (context.Targets.Count > 0)
             {
-                var interactionEntity = context.Targets.First();
+                var interactionEntity = context.Targets.Peek();
                 var hack = interactionEntity as BaseEntity;
                 var durationMs = hack.Interaction.DurationMs;
                 var currentMs = context.Shard.CurrentTime;
