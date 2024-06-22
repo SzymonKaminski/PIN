@@ -59,9 +59,9 @@ public class AbilitySystem
             LastUpdate = currentTime;
             foreach (var entity in Shard.Entities.Values)
             {
-                if (typeof(IAptitudeTarget).IsAssignableFrom(entity.GetType()))
+                if (entity is IAptitudeTarget target)
                 {
-                    ProcessTarget(entity as IAptitudeTarget);
+                    ProcessTarget(target);
                 }
             }
         }
@@ -213,7 +213,7 @@ public class AbilitySystem
         PlayerThumperCalldownRequests.Add(entityId, request);
     }
 
-    public void HandleLocalProximityAbilitySuccess(IShard shard, IAptitudeTarget source, uint commandId, uint time, HashSet<IAptitudeTarget> targets)
+    public void HandleLocalProximityAbilitySuccess(IShard shard, IAptitudeTarget source, uint commandId, uint time, AptitudeTargets targets)
     {
         Console.WriteLine($"HandleLocalProximityAbilitySuccess Source {source}, Command {commandId}, Time {time}, Targets {string.Join(Environment.NewLine, targets)} ({targets.Count})");
 
@@ -237,7 +237,7 @@ public class AbilitySystem
         }
     }
 
-    public void HandleActivateAbility(IShard shard, IAptitudeTarget initiator, uint abilityId, uint activationTime, HashSet<IAptitudeTarget> targets)
+    public void HandleActivateAbility(IShard shard, IAptitudeTarget initiator, uint abilityId, uint activationTime, AptitudeTargets targets, IAptitudeTarget self = null)
     {
         var chainId = SDBInterface.GetAbilityData(abilityId).Chain;
         if (chainId == 0)
@@ -248,6 +248,7 @@ public class AbilitySystem
         var chain = Factory.LoadChain(chainId);
         chain.Execute(new Context(shard, initiator)
         {
+            Self = self ?? initiator,
             ChainId = chainId,
             AbilityId = abilityId,
             Targets = targets,
